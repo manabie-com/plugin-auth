@@ -6,7 +6,7 @@
  */
 
 import fs from 'node:fs';
-import open, { apps, AppName } from 'open';
+// import open, { apps, AppName } from 'open';
 import { Flags, SfCommand, loglevel } from '@salesforce/sf-plugins-core';
 import { AuthFields, AuthInfo, Logger, Messages, OAuth2Config, SfError, WebOAuthServer } from '@salesforce/core';
 import { Env } from '@salesforce/kit';
@@ -89,7 +89,7 @@ export default class LoginWeb extends SfCommand<AuthFields> {
     };
 
     try {
-      const authInfo = await this.executeLoginFlow(oauthConfig, flags.browser);
+      const authInfo = await this.executeLoginFlow(oauthConfig);
       await authInfo.handleAliasAndDefaultSettings({
         alias: flags.alias,
         setDefault: flags['set-default'],
@@ -110,16 +110,22 @@ export default class LoginWeb extends SfCommand<AuthFields> {
     }
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  // private async sleep(ms: number): Promise<void> {
+  //   return new Promise((resolve) => setTimeout(resolve, ms));
+  // }
+
   // leave it because it's stubbed in the test
   // eslint-disable-next-line class-methods-use-this
-  private async executeLoginFlow(oauthConfig: OAuth2Config, browser?: string): Promise<AuthInfo> {
+  private async executeLoginFlow(oauthConfig: OAuth2Config): Promise<AuthInfo> {
     const oauthServer = await WebOAuthServer.create({ oauthConfig });
     await oauthServer.start();
-    const app = browser && browser in apps ? (browser as AppName) : undefined;
-    const openOptions = app ? { app: { name: apps[app] }, wait: false } : { wait: false };
+    // const app = browser && browser in apps ? (browser as AppName) : undefined;
+    // const openOptions = app ? { app: { name: apps[app] }, wait: false } : { wait: false };
     const authorizationUrl = oauthServer.getAuthorizationUrl();
     fs.writeFileSync('authUrl.txt', authorizationUrl);
-    await open(oauthServer.getAuthorizationUrl(), openOptions);
+    // await this.sleep(30000);
+    // await open(oauthServer.getAuthorizationUrl(), openOptions);
     return oauthServer.authorizeAndSave();
   }
 }
