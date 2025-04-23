@@ -9,7 +9,7 @@
 
 import { Config } from '@oclif/core';
 import { AuthFields, AuthInfo, SfError } from '@salesforce/core';
-import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { MockTestOrgData, TestContext } from '@salesforce/core/testSetup';
 import { StubbedType, stubInterface, stubMethod } from '@salesforce/ts-sinon';
 import { assert, expect } from 'chai';
 import { Env } from '@salesforce/kit';
@@ -19,7 +19,13 @@ import LoginWeb from '../../../../src/commands/org/login/web.js';
 describe('org:login:web', () => {
   const $$ = new TestContext();
   const testData = new MockTestOrgData();
-  const config = stubInterface<Config>($$.SANDBOX, {});
+  const config = stubInterface<Config>($$.SANDBOX, {
+    runHook: async () =>
+      Promise.resolve({
+        successes: [],
+        failures: [],
+      }),
+  });
   let authFields: AuthFields;
   let authInfoStub: StubbedType<AuthInfo>;
   let uxStub: StubbedType<Ux>;
@@ -101,6 +107,16 @@ describe('org:login:web', () => {
 
   it('should throw device warning error when in container mode (SFDX_CONTAINER_MODE)', async () => {
     stubMethod($$.SANDBOX, Env.prototype, 'getBoolean').withArgs('SFDX_CONTAINER_MODE').returns(true);
+    const login = await createNewLoginCommand([], false, undefined);
+    try {
+      await login.run();
+    } catch (error) {
+      const err = error as SfError;
+      expect(err.name).to.equal('DEVICE_WARNING');
+    }
+  });
+  it('should throw device warning error when in container mode (SF_CONTAINER_MODE)', async () => {
+    stubMethod($$.SANDBOX, Env.prototype, 'getBoolean').withArgs('SF_CONTAINER_MODE').returns(true);
     const login = await createNewLoginCommand([], false, undefined);
     try {
       await login.run();

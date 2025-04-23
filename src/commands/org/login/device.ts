@@ -5,10 +5,15 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { AuthFields, AuthInfo, DeviceOauthService, Messages, OAuth2Config } from '@salesforce/core';
-import { Flags, SfCommand, loglevel } from '@salesforce/sf-plugins-core';
-import { DeviceCodeResponse } from '@salesforce/core/lib/deviceOauthService.js';
-import { ux } from '@oclif/core';
+import {
+  type AuthFields,
+  AuthInfo,
+  DeviceOauthService,
+  Messages,
+  type OAuth2Config,
+  type DeviceCodeResponse,
+} from '@salesforce/core';
+import { Flags, SfCommand, loglevel, Ux } from '@salesforce/sf-plugins-core';
 import common from '../../../common.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
@@ -72,7 +77,7 @@ export default class LoginDevice extends SfCommand<DeviceLoginResult> {
     const loginData = await deviceOauthService.requestDeviceLogin();
 
     if (this.jsonEnabled()) {
-      ux.log(JSON.stringify(loginData, null, 2));
+      new Ux().log(JSON.stringify(loginData, null, 2));
     } else {
       this.styledHeader(messages.getMessage('actionRequired'));
       this.log(messages.getMessage('enterCode', [loginData.user_code, loginData.verification_uri]));
