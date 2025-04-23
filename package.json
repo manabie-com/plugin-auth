@@ -1,30 +1,30 @@
 {
   "name": "@salesforce/plugin-auth",
   "description": "plugin for sf auth commands",
-  "version": "3.5.0",
+  "version": "3.6.113",
   "author": "Salesforce",
   "bugs": "https://github.com/forcedotcom/cli/issues",
   "dependencies": {
-    "@inquirer/checkbox": "^1.5.2",
-    "@inquirer/select": "^1.3.3",
-    "@oclif/core": "^3.25.2",
-    "@salesforce/core": "^6.7.3",
-    "@salesforce/kit": "^3.0.15",
-    "@salesforce/sf-plugins-core": "^8.0.1",
-    "@salesforce/ts-types": "^2.0.9",
-    "chalk": "^5.3.0",
-    "open": "^10.1.0"
+    "@inquirer/checkbox": "^2.5.0",
+    "@inquirer/select": "^2.5.0",
+    "@oclif/core": "^4",
+    "@salesforce/core": "^8.9.1",
+    "@salesforce/kit": "^3.2.3",
+    "@salesforce/plugin-info": "^3.4.52",
+    "@salesforce/sf-plugins-core": "^12.2.1",
+    "@salesforce/ts-types": "^2.0.11",
+    "open": "^10.1.1"
   },
   "devDependencies": {
-    "@oclif/plugin-command-snapshot": "^5.1.2",
-    "@salesforce/cli-plugins-testkit": "^5.1.10",
-    "@salesforce/dev-scripts": "^8.4.2",
-    "@salesforce/plugin-command-reference": "^3.0.71",
-    "@salesforce/ts-sinon": "^1.4.19",
-    "eslint-plugin-sf-plugin": "^1.17.4",
-    "oclif": "^4.6.2",
+    "@oclif/plugin-command-snapshot": "^5.2.38",
+    "@salesforce/cli-plugins-testkit": "^5.3.39",
+    "@salesforce/dev-scripts": "^11.0.2",
+    "@salesforce/plugin-command-reference": "^3.1.49",
+    "@salesforce/ts-sinon": "^1.4.30",
+    "eslint-plugin-sf-plugin": "^1.20.19",
+    "oclif": "^4.17.44",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.3"
+    "typescript": "^5.5.4"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -32,8 +32,6 @@
   "files": [
     "/lib",
     "/messages",
-    "/npm-shrinkwrap.json",
-    "/oclif.lock",
     "/oclif.manifest.json"
   ],
   "homepage": "https://github.com/salesforcecli/plugin-auth",
@@ -46,7 +44,7 @@
     "sfdx",
     "sfdx-plugin"
   ],
-  "license": "BSD-3-Clause",
+  "license": "Apache-2.0",
   "oclif": {
     "commands": "./lib/commands",
     "additionalHelpFlags": [
@@ -89,6 +87,9 @@
         }
       }
     },
+    "hooks": {
+      "sf-doctor-@salesforce/plugin-auth": "./lib/hooks/diagnostics"
+    },
     "flexibleTaxonomy": true,
     "topicSeparator": " "
   },
@@ -99,6 +100,7 @@
     "clean-all": "sf-clean all",
     "compile": "wireit",
     "docs": "sf-docs",
+    "fix-license": "eslint src test --fix --rule \"header/header: [2]\"",
     "format": "wireit",
     "link-check": "wireit",
     "lint": "wireit",
@@ -220,7 +222,7 @@
       "output": []
     },
     "link-check": {
-      "command": "node -e \"process.exit(process.env.CI ? 0 : 1)\" || linkinator \"**/*.md\" --skip \"CHANGELOG.md|node_modules|test/|confluence.internal.salesforce.com|my.salesforce.com|%s\" --markdown --retry --directory-listing --verbosity error",
+      "command": "node -e \"process.exit(process.env.CI ? 0 : 1)\" || linkinator \"**/*.md\" --skip \"CHANGELOG.md|node_modules|test/|confluence.internal.salesforce.com|my.salesforce.com|localhost|%s\" --markdown --retry --directory-listing --verbosity error",
       "files": [
         "./*.md",
         "./!(CHANGELOG).md",
@@ -230,5 +232,6 @@
     }
   },
   "exports": "./lib/index.js",
-  "type": "module"
+  "type": "module",
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

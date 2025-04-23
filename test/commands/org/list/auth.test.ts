@@ -5,10 +5,10 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
-import { Config } from '@oclif/core';
+import { MockTestOrgData, TestContext } from '@salesforce/core/testSetup';
 import { expect } from 'chai';
 import { AuthInfo } from '@salesforce/core';
+import { stubUx } from '@salesforce/sf-plugins-core';
 import ListAuth from '../../../../src/commands/org/list/auth.js';
 
 describe('org:list:auth', () => {
@@ -22,12 +22,12 @@ describe('org:list:auth', () => {
     if (forceFailure) {
       $$.SANDBOX.stub(AuthInfo, 'create').throws(new Error('decrypt error'));
     }
+    stubUx($$.SANDBOX);
   }
 
   it('should show auth files', async () => {
     await prepareStubs();
-    const list = new ListAuth(['--json'], {} as Config);
-    const [auths] = await list.run();
+    const [auths] = await ListAuth.run(['--json']);
     expect(auths.alias).to.deep.equal(testData.aliases?.join(',') ?? '');
     expect(auths.username).to.equal(testData.username);
     expect(auths.instanceUrl).to.equal(testData.instanceUrl);
@@ -37,8 +37,7 @@ describe('org:list:auth', () => {
 
   it('should show files with auth errors', async () => {
     await prepareStubs(true);
-    const list = new ListAuth(['--json'], {} as Config);
-    const [auths] = await list.run();
+    const [auths] = await ListAuth.run(['--json']);
     expect(auths.alias).to.deep.equal(testData.aliases?.join(',') ?? '');
     expect(auths.username).to.equal(testData.username);
     expect(auths.instanceUrl).to.equal(testData.instanceUrl);
